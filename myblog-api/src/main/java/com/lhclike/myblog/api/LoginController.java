@@ -30,6 +30,8 @@ public class LoginController {
     @PostMapping("/sendsms")
     public Result loginSendSms(@RequestBody LoginSendPhonenumber loginSendPhonenumber){
 
+        System.out.println("dddddddddddddddddddddddddddddddddddddddddddsaaaadddddddddddddddddddddddddddddddddddddddddd");
+
         return loginService.loginSendSms(loginSendPhonenumber);
     }
    /* @PostMapping("/sendsms")
