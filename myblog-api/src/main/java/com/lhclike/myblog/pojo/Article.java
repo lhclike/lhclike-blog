@@ -1,6 +1,7 @@
 package com.lhclike.myblog.pojo;
 
 import lombok.Data;
+import org.joda.time.DateTime;
 
 @Data
 public class Article {
@@ -25,5 +26,5 @@ public class Article {
     //置顶
     private int weight=Article_Common;
     //创建时间
-    private Long createDate;
+    private DateTime createDate;
 }

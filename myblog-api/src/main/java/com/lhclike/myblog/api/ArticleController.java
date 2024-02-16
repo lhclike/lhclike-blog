@@ -52,10 +52,10 @@ public class ArticleController {
         return Result.success(articleVo);
     }
 
-    @PostMapping("publish")
-    public Result publish(@RequestBody ArticleParam articleParam){
-        return articleService.publish(articleParam);
-    }
+//    @PostMapping("publish")
+//    public Result publish(@RequestBody ArticleParam articleParam){
+//        return articleService.publish(articleParam);
+//    }
 
 
 

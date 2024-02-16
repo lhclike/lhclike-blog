@@ -154,7 +154,7 @@ public class ArticleServiceImpl implements ArticleService {
         return copy(article,true,true,true,true);
     }
 
-    @Override
+   /* @Override
     @Transactional
     public Result publish(ArticleParam articleParam) {
         SysUser sysUser = UserThreadLocal.get();
@@ -192,7 +192,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(article.getId());
         return Result.success(articleVo);
-    }
+    }*/
 
 
 }

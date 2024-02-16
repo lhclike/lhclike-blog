@@ -15,6 +15,6 @@ public interface ArticleService {
     Result hotArticles(int limit);
     Result listArticles();
     ArticleVo findArticleById(Long id);
-    Result publish(ArticleParam articleParam);
+    /*Result publish(ArticleParam artileParam);*/
 
 }

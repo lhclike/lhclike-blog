@@ -2,11 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--项目所属的组织或团体-->
     <groupId>com.lhclike</groupId>
+    <!--项目的唯一标识符-->
     <artifactId>myblog-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
+<!--    项目的名称-->
     <name>myblog</name>
+<!--    项目描述-->
     <description>Demo project for Spring Boot</description>
 
 
@@ -16,6 +19,7 @@
         <version>2.5.0</version>
         <relativePath/>
     </parent>
+<!--    项目级别的属性，如编码方式和Java版本-->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -23,7 +27,7 @@
     </properties>
 
     <dependencies>
-
+<!--        SpringBoot核心启动器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -41,72 +45,74 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-
+<!--        面向切面编程的支持-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-
+        <!--提供邮箱发送功能-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+<!--        提供了Web应用程序的必要组件，包括Spring MVC，Tomcat作为默认嵌入式容器等-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <!--提供测试功能-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-
+<!--        高性能JSON库，用于Java对象和JSON数据之间进行切换-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.76</version>
         </dependency>
-
+<!--        用于连接Mysql数据库-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-
+<!--        Spring Boot配置属性的注解处理器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-
+<!--        Java工具类处理字符串数值反射-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
+        <!--提供丰富的集合类-->
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.2</version>
         </dependency>
-
+<!--        引入mybatisplus-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.3</version>
         </dependency>
+<!--        通过注解生成getter，setter，hashCode和toString等-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+<!--        一套完整的日期和时间库，用于替代Java旧的日期时间API-->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.10.10</version>
         </dependency>
+<!--        提供常见的编码解码如Base64，Hex和URL编码-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -150,15 +156,11 @@
             <artifactId>aliyun-java-sdk-core</artifactId>
             <version>4.6.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
-        </dependency>
+
 
     </dependencies>
 
-
+<!--    这里使用spring-boot-maven-plugin插件简化SpringBoot应用的打包和运行-->
     <build>
         <plugins>
             <plugin>
@@ -166,6 +168,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+<!--        指定了资源文件，包括配置文件和XML映射文件-->
         <resources>
             <resource>
                 <directory>src/main/java</directory>
