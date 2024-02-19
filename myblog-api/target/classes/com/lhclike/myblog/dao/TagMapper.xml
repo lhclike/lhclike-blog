@@ -16,10 +16,10 @@
     </sql>
 
     <select id="findTagsByArticleId" parameterType="long" resultType="com.lhclike.myblog.pojo.Tag">
-        select <include refid="all" />  from ms_tag
+        select <include refid="all" />  from lhc_tag
         <where>
             id in
-            (select tag_id from ms_article_tag where article_id = #{articleId})
+            (select tag_id from lhc_article_tag where article_id = #{articleId})
         </where>
     </select>
 
@@ -29,11 +29,11 @@
             t.avatar,
             t.tag_name
         FROM
-            ms_tag t
+            lhc_tag t
+                JOIN
+            lhc_article_tag at ON t.id = at.tag_id
             JOIN
-            ms_article_tag at ON t.id = at.tag_id
-            JOIN
-            ms_article a ON at.article_id = a.id
+            lhc_article a ON at.article_id = a.id
         GROUP BY
             t.id, t.avatar, t.tag_name
         ORDER BY
