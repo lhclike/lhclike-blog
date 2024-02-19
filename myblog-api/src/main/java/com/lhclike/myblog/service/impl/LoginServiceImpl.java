@@ -10,7 +10,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
-import com.lhclike.myblog.config.JWTUtils;
+import com.lhclike.myblog.util.JWTUtils;
 import com.lhclike.myblog.pojo.SysUser;
 import com.lhclike.myblog.service.LoginService;
 import com.lhclike.myblog.service.UserService;

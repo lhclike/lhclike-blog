@@ -7,6 +7,6 @@
 
 
     <select id="listArchives"  resultType="com.lhclike.myblog.pojo.Archives">
-        select year(create_date) as year,month(create_date) as month,count(*) as count from ms_article group by year,month
+        select year(create_date) as year,month(create_date) as month,count(*) as count from lhc_article group by year,month
     </select>
 </mapper>

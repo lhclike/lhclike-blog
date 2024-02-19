@@ -4,7 +4,7 @@ package com.lhclike.myblog.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-import com.lhclike.myblog.config.JWTUtils;
+import com.lhclike.myblog.util.JWTUtils;
 
 import com.lhclike.myblog.dao.SysUserMapper;
 import com.lhclike.myblog.pojo.SysUser;
