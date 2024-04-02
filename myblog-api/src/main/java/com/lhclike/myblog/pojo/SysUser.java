@@ -1,10 +1,16 @@
 package com.lhclike.myblog.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+
+
 
 @Data
 public class SysUser {
-
+ //指定自动增长策略，根据数据库原则
+   @TableId(value = "id",type= IdType.AUTO)
     private Long id;
 
     private String account;
@@ -21,7 +27,7 @@ public class SysUser {
 
     private Long lastLogin;
 
-    private String mobilePhoneNumber;
+    private String phoneNumber;
 
     private String nickname;
 

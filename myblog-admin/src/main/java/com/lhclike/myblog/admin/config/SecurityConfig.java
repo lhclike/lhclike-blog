@@ -38,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                 .loginPage("/login.html") //自定义的登录页面
                 .loginProcessingUrl("/login") //登录处理接口
-                .usernameParameter("username") //定义登录时的用户名的key 默认为username
-                .passwordParameter("password") //定义登录时的密码key，默认是password
+                .usernameParameter("lhclike") //定义登录时的用户名的key 默认为username
+                .passwordParameter("123456007") //定义登录时的密码key，默认是password
                 .defaultSuccessUrl("/pages/main.html")
                 .failureUrl("/login.html")
                 .permitAll() //通过 不拦截，更加前面配的路径决定，这是指和登录表单相关的接口 都通过

@@ -5,6 +5,6 @@
 <mapper namespace="com.lhclike.myblog.admin.mapper.PermissionMapper">
 
     <select id="findPermissionsByAdminId" parameterType="long" resultType="com.lhclike.myblog.admin.pojo.Permission">
-        select * from ms_permission where id in (select permission_id from ms_admin_permission where admin_id=#{adminId})
+        select * from lhc_permission where id in (select permission_id from lhc_admin_permission where admin_id=#{adminId})
     </select>
 </mapper>

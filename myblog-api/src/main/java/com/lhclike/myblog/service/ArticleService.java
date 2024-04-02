@@ -1,5 +1,6 @@
 package com.lhclike.myblog.service;
 
+import com.lhclike.myblog.vo.ArticleBodyVo;
 import com.lhclike.myblog.vo.ArticleVo;
 import com.lhclike.myblog.vo.Result;
 import com.lhclike.myblog.vo.params.ArticleParam;
@@ -10,11 +11,12 @@ import java.util.List;
 
 public interface ArticleService {
 
-    List<ArticleVo> listArticlesPage(PageParams pageParams);
+    Result listArticlesPage(PageParams pageParams);
     Result newArticles(int limit);
     Result hotArticles(int limit);
-    Result listArticles();
+    Result listArchives();
     ArticleVo findArticleById(Long id);
-    /*Result publish(ArticleParam artileParam);*/
+    ArticleBodyVo findArticleBody(Long articleId);
+    Result publish(ArticleParam artileParam);
 
 }

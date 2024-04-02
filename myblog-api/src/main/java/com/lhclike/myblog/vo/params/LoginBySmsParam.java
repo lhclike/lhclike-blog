@@ -7,11 +7,11 @@ public class LoginBySmsParam {
 
     private String phoneNumber;
     //验证码
-    private String code;
+    private String smsCode;
 
-    public LoginBySmsParam(String phonenumber, String code) {
+    public LoginBySmsParam(String phonenumber, String smscode) {
         this.phoneNumber = phonenumber;
-        this.code = code;
+        this.smsCode = smscode;
     }
 
     public LoginBySmsParam() {

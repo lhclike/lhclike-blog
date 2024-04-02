@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
+        //可能请求静态资源
         if (!(handler instanceof HandlerMethod)){
             return true;
         }

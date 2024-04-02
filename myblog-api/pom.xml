@@ -157,6 +157,14 @@
             <version>4.6.2</version>
         </dependency>
 
+        <!--spring cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+
+
 
     </dependencies>
 

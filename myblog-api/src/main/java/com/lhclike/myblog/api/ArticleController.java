@@ -1,5 +1,7 @@
 package com.lhclike.myblog.api;
 
+import com.lhclike.myblog.common.aop.LogAnnotation;
+import com.lhclike.myblog.common.cache.Cache;
 import com.lhclike.myblog.service.ArticleService;
 
 import com.lhclike.myblog.vo.ArticleVo;
@@ -7,6 +9,7 @@ import com.lhclike.myblog.vo.Result;
 import com.lhclike.myblog.vo.params.ArticleParam;
 import com.lhclike.myblog.vo.params.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +26,9 @@ public class ArticleController {
     @PostMapping
     public Result articles(@RequestBody PageParams pageParams) {
         //ArticleVo 页面接收的数据
-        List<ArticleVo> articles = articleService.listArticlesPage(pageParams);
 
-        return Result.success(articles);
+
+        return articleService.listArticlesPage(pageParams);
     }
     @PostMapping("new")
     public Result newArticles(){
@@ -33,6 +36,7 @@ public class ArticleController {
         return  articleService.newArticles(limit);
     }
     @PostMapping("hot")
+    @Cacheable(value = {"category"}, key = "#root.methodName")
     public Result hotArticles(){
         int limit=5;
         return  articleService.hotArticles(limit);
@@ -41,9 +45,10 @@ public class ArticleController {
 
 
     @PostMapping("listArchives")
-    public Result listArticles(){
+//    @LogAnnotation(module ="文章",operation="获取文章列表")
+    public Result listArchives(){
 
-        return  articleService.listArticles();
+        return  articleService.listArchives();
     }
 
     @PostMapping("view/{id}")
@@ -52,10 +57,10 @@ public class ArticleController {
         return Result.success(articleVo);
     }
 
-//    @PostMapping("publish")
-//    public Result publish(@RequestBody ArticleParam articleParam){
-//        return articleService.publish(articleParam);
-//    }
+   @PostMapping("publish")
+   public Result publish(@RequestBody ArticleParam articleParam){
+       return articleService.publish(articleParam);
+    }
 
 
 

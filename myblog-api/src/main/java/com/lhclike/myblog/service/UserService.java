@@ -11,6 +11,7 @@ public interface UserService {
     SysUser findUser(String account,String pwd);
     Result getUserInfoByToken(String token);
     SysUser findUserByAccount(String account);
+    SysUser findUserByPhoneNumber(String phoneNumber);
     void save(SysUser sysUser);
     SysUser checkToken(String token);
     UserVo findUserVoById(Long id);

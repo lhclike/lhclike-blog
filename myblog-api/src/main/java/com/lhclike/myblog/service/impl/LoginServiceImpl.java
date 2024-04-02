@@ -71,7 +71,8 @@ public class LoginServiceImpl implements LoginService {
         String account =loginParam.getAccount();
         String password=loginParam.getPassword();
         String nickname=loginParam.getNickname();
-        if(StringUtils.isBlank(account)||StringUtils.isBlank(password)||StringUtils.isBlank(nickname)){
+        String phoneNumber=loginParam.getPhoneNumber();
+        if(StringUtils.isBlank(account)||StringUtils.isBlank(password)||StringUtils.isBlank(nickname)||StringUtils.isBlank(phoneNumber)){
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());}
             SysUser sysUser=this.UserService.findUserByAccount(account);
             if (sysUser != null){
@@ -80,6 +81,7 @@ public class LoginServiceImpl implements LoginService {
             sysUser = new SysUser();
             sysUser.setNickname(nickname);
             sysUser.setAccount(account);
+            sysUser.setPhoneNumber(phoneNumber);
             sysUser.setPassword(DigestUtils.md5Hex(password+slat));
             sysUser.setCreateDate(System.currentTimeMillis());
             sysUser.setLastLogin(System.currentTimeMillis());
@@ -89,7 +91,9 @@ public class LoginServiceImpl implements LoginService {
             sysUser.setSalt("");
             sysUser.setStatus("");
             sysUser.setEmail("");
+            System.out.println(sysUser.getId());
             this.UserService.save(sysUser);
+            System.out.println(sysUser.getId());
             //token
             String token = JWTUtils.createToken(sysUser.getId());
 
@@ -112,19 +116,34 @@ public class LoginServiceImpl implements LoginService {
     public Result loginBySms(LoginBySmsParam loginBySmsParam) {
 
         String phonenumber=loginBySmsParam.getPhoneNumber();
-        String code=loginBySmsParam.getCode();
+        String code=loginBySmsParam.getSmsCode();
+        System.out.println(phonenumber+"11111111111111111111111111111111111111111111");
+        System.out.println(code+"11111111111111111111111111111111111111111111");
+
         if(StringUtils.isBlank(phonenumber)||StringUtils.isBlank(code)){
             return Result.fail(ErrorCode.PHONENUMBER_CODE_NULL.getCode(), ErrorCode.PHONENUMBER_CODE_NULL.getMsg());}
         //校验手机号码
         if(!isValidChineseMobileNumber(phonenumber)){
             return Result.fail(ErrorCode.INVALID_PHONENUMBER.getCode(), ErrorCode.INVALID_PHONENUMBER.getMsg());
         }
-        LoginBySmsParam smsParam= (LoginBySmsParam) redisTemplate.opsForValue().get("CODE_"+phonenumber);
+
+        String userJson= (String) redisTemplate.opsForValue().get("CODE_"+phonenumber);
+
+
+        LoginBySmsParam smsParam=JSON.parseObject(userJson,LoginBySmsParam.class);
+
 
 
         //校验验证码
-        if(phonenumber.equals(smsParam.getPhoneNumber()) && code.equals(smsParam.getCode())){
-            return Result.success("验证成功");
+        if(phonenumber.equals(smsParam.getPhoneNumber()) && code.equals(smsParam.getSmsCode())){
+            SysUser sysUser=this.UserService.findUserByPhoneNumber(phonenumber);
+            if(sysUser==null){
+                return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
+            }
+            String token= JWTUtils.createToken(sysUser.getId());
+            redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
+            System.out.println("TOKEN_"+token);
+            return Result.success(token);
         }
 
 
@@ -164,7 +183,7 @@ public class LoginServiceImpl implements LoginService {
             e.printStackTrace();
         }
         LoginBySmsParam loginBySmsResult=new LoginBySmsParam(phonenumber,code);
-        redisTemplate.opsForValue().set("CODE_"+phonenumber, loginBySmsResult,1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("CODE_"+phonenumber, JSON.toJSONString(loginBySmsResult),1, TimeUnit.DAYS);
 //        redisTemplate.opsForValue().set("CODE_"+phonenumber, loginBySmsParam,60, TimeUnit.SECONDS);
         return Result.success("短信发送成功");
     }

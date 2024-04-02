@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = sysUserMapper.selectById(userId);
         if (sysUser == null) {
             sysUser = new SysUser();
-            sysUser.setNickname("码神之路");
+            sysUser.setNickname("lhclike");
         }
         return sysUser;
     }
@@ -54,19 +54,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result getUserInfoByToken(String token) {
         Map<String,Object> map= JWTUtils.checkToken(token);
+        System.out.println(map);
         if(map==null){
             return Result.fail(ErrorCode.NO_LOGIN.getCode(),ErrorCode.NO_LOGIN.getMsg());
         }
         String userJson= redisTemplate.opsForValue().get("TOKEN_"+token);
+        System.out.println(userJson);
         if(userJson==null){
             return Result.fail(ErrorCode.NO_LOGIN.getCode(),ErrorCode.NO_LOGIN.getMsg());
         }
-        SysUser sysUser= JSON.parseObject(userJson,SysUser.class);
+        String parseUserJson = JSON.parse(userJson).toString();
+        SysUser sysUser= JSON.parseObject(parseUserJson,SysUser.class);
         LoginUserVo loginUserVo=new LoginUserVo();
         loginUserVo.setAccount(sysUser.getAccount());
         loginUserVo.setAvatar(sysUser.getAvatar());
         loginUserVo.setId(sysUser.getId());
         loginUserVo.setNickaname(sysUser.getNickname());
+        loginUserVo.setPhoneNumber(sysUser.getPhoneNumber());
         return Result.success(loginUserVo);
 
     }
@@ -78,6 +82,14 @@ public class UserServiceImpl implements UserService {
         queryWrapper.last("limit 1");
         return sysUserMapper.selectOne(queryWrapper);
     }
+    @Override
+    public SysUser findUserByPhoneNumber(String phoneNumber) {
+        LambdaQueryWrapper<SysUser> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getPhoneNumber,phoneNumber);
+        queryWrapper.last("limit 1");
+        return sysUserMapper.selectOne(queryWrapper);
+    }
+
 
     @Override
     public void save(SysUser sysUser) {
@@ -97,7 +109,12 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isBlank(userJson)){
             return  null;
         }
-        SysUser sysUser=JSON.parseObject(userJson,SysUser.class);
+        System.out.println("-----------------------------------------------------------------------");
+        //userJson中有很对斜线
+        System.out.println(userJson);
+        String str= (String) JSON.parse(userJson);
+        System.out.println(str);
+        SysUser sysUser=JSON.parseObject(str,SysUser.class);
         return  sysUser;
     }
 
@@ -107,8 +124,8 @@ public class UserServiceImpl implements UserService {
         if (sysUser == null){
             sysUser = new SysUser();
             sysUser.setId(1L);
-            sysUser.setAvatar("/static/img/logo.b3a48c0.png");
-            sysUser.setNickname("码神之路");
+            sysUser.setAvatar("/static/user/admin.png");
+            sysUser.setNickname("lhclike");
         }
         UserVo userVo = new UserVo();
         userVo.setAvatar(sysUser.getAvatar());

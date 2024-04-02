@@ -2,6 +2,7 @@ package com.lhclike.myblog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lhclike.myblog.dao.ArticleBodyMapper;
 import com.lhclike.myblog.dao.ArticleMapper;
@@ -42,7 +43,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private CategoryService categoryService;
     @Autowired
-    private ArticleTagMapper articleTagMapper;
+    private  ArticleTagMapper articleTagMapper;
+
 
     @Autowired
     private UserService userService;
@@ -73,7 +75,8 @@ public class ArticleServiceImpl implements ArticleService {
     private CategoryVo findCategory(Long categoryId) {
         return categoryService.findCategoryById(categoryId);
     }
-    private ArticleBodyVo findArticleBody(Long articleId) {
+
+    public ArticleBodyVo findArticleBody(Long articleId) {
         LambdaQueryWrapper<ArticleBody> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ArticleBody::getArticleId,articleId);
         ArticleBody articleBody = articleBodyMapper.selectOne(queryWrapper);
@@ -106,19 +109,44 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
+
     @Override
-    public List<ArticleVo> listArticlesPage(PageParams pageParams) {
-        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+    public Result listArticlesPage(PageParams pageParams) {
+//        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+//        //查询文章的参数 加上分类id，判断不为空 加上分类条件
+//        if (pageParams.getCategoryId() != null) {
+//            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+//        }
+//        List<Long> articleIdList = new ArrayList<>();
+//        if (pageParams.getTagId() != null){
+//            LambdaQueryWrapper<ArticleTag> articleTagLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//            articleTagLambdaQueryWrapper.eq(ArticleTag::getTagId,pageParams.getTagId());
+//            List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagLambdaQueryWrapper);
+//            for (ArticleTag articleTag : articleTags) {
+//                articleIdList.add(articleTag.getArticleId());
+//            }
+//            if (articleIdList.size() > 0){
+//                queryWrapper.in(Article::getId,articleIdList);
+//            }
+//        }
+//
+//        //是否置顶进行排序
+//        //order by create_date desc
+//        queryWrapper.orderByDesc(Article::getWeight,Article::getCreateDate);
+//        Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
+//        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+//        List<ArticleVo> articleVoList = copyList(articlePage.getRecords(),true,false,false);
+//        return articleVoList;
         Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
-        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
-        List<ArticleVo> articleVoList = copyList(articlePage.getRecords(),true,false,false);
-        return articleVoList;
+        IPage<Article> articleIPage = this.articleMapper.listArticle(page,pageParams.getCategoryId(),pageParams.getTagId(),pageParams.getYear(),pageParams.getMonth());
+        return Result.success(copyList(articleIPage.getRecords(),true,true));
     }
 
     @Override
     public Result newArticles(int limit) {
         LambdaQueryWrapper<Article> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Article::getCreateDate);
+
         queryWrapper.select(Article::getId,Article::getTitle);
         queryWrapper.last("limit "+limit);
         List<Article> articles=articleMapper.selectList(queryWrapper);
@@ -140,9 +168,10 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public Result listArticles() {
+    public Result listArchives() {
         List<Article> articleList=articleMapper.listArchives();
         return Result.success(articleList);
+
     }
 
 
@@ -154,7 +183,7 @@ public class ArticleServiceImpl implements ArticleService {
         return copy(article,true,true,true,true);
     }
 
-   /* @Override
+    @Override
     @Transactional
     public Result publish(ArticleParam articleParam) {
         SysUser sysUser = UserThreadLocal.get();
@@ -192,7 +221,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(article.getId());
         return Result.success(articleVo);
-    }*/
+    }
 
 
 }

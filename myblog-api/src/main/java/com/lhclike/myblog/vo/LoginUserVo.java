@@ -8,4 +8,5 @@ public class LoginUserVo {
     private String account;
     private String nickaname;
     private String avatar;
+    private String phoneNumber;
 }

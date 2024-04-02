@@ -20,6 +20,7 @@ public class UploadController {
     MinioConfig minioConfig;
 
     @PostMapping
+    //代码传入后端一个文件
     public Result upload(@RequestParam("file") MultipartFile file) throws Exception {
         String fileName = UUID.randomUUID().toString() + "." + StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
         String path = minioConfig.putObject(file);

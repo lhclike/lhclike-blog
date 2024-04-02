@@ -24,6 +24,7 @@ public class LoginController {
 
     @PostMapping("/sms")
     public Result loginBySms(@RequestBody LoginBySmsParam loginBySmsParam){
+        System.out.println(loginBySmsParam.getSmsCode()+"dadadadadada"+loginBySmsParam.getPhoneNumber());
         return loginService.loginBySms(loginBySmsParam);
     }
     @CrossOrigin
@@ -39,5 +40,7 @@ public class LoginController {
         System.out.println(phonenumber);
         return loginService.loginSendSms(new LoginSendPhonenumber());
     }*/
+
+
 
 }
