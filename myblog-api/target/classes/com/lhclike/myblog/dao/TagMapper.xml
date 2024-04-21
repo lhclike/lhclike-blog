@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--MyBatis配置文件-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lhclike.myblog.dao.TagMapper">
+
+    <!-- 定义一个返回的结果类型 -->
+    <resultMap id="TagResultMap" type="com.lhclike.myblog.pojo.Tag">
+        <id column="id" property="id" />
+        <result column="avatar" property="avatar" />
+        <result column="tag_name" property="tagName" />
+    </resultMap>
+
+    <sql id="all">
+        id,avatar,tag_name as tagName
+    </sql>
+
+    <select id="findTagsByArticleId" parameterType="long" resultType="com.lhclike.myblog.pojo.Tag">
+        select <include refid="all" />  from lhc_tag
+        <where>
+            id in
+            (select tag_id from lhc_article_tag where article_id = #{articleId})
+        </where>
+    </select>
+
+    <select id="findHotTag" parameterType="int" resultType="com.lhclike.myblog.pojo.Tag">
+        SELECT
+            t.id,
+            t.avatar,
+            t.tag_name
+        FROM
+            lhc_tag t
+                JOIN
+            lhc_article_tag at ON t.id = at.tag_id
+            JOIN
+            lhc_article a ON at.article_id = a.id
+        GROUP BY
+            t.id, t.avatar, t.tag_name
+        ORDER BY
+            SUM(a.view_counts) DESC
+            LIMIT #{limit}
+    </select>
+
+
+
+
+
+</mapper>
