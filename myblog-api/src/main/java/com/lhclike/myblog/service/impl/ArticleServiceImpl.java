@@ -1,5 +1,6 @@
 package com.lhclike.myblog.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,19 +18,24 @@ import com.lhclike.myblog.vo.*;
 import com.lhclike.myblog.vo.params.ArticleParam;
 import com.lhclike.myblog.vo.params.PageParams;
 import org.apache.commons.collections.functors.TruePredicate;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    @Autowired
+    @Resource
     private ArticleMapper articleMapper;
 
 
@@ -38,12 +44,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private TagsService tagsService;
-    @Autowired
+    @Resource
     private ArticleBodyMapper articleBodyMapper;
     @Autowired
     private CategoryService categoryService;
-    @Autowired
+    @Resource
     private  ArticleTagMapper articleTagMapper;
+
+    @Autowired
+    private  RedisTemplate<String,String> redisTemplate;
 
 
     @Autowired
@@ -165,6 +174,33 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(copyList(articles,false,false,false,false));
     }
 
+    @Override
+    public Result hotArticlesZsort(int limit) {
+        // 先进行缓存查询
+        String redisKey = "hotArticles:";
+        // 若Redis中已有数据，从Redis获取
+        if(redisTemplate.hasKey(redisKey)){
+            Set<String> zsetArticles = redisTemplate.opsForZSet().range(redisKey, 0, limit);
+
+            // 将Set<String>数据转为List<Article>
+            List<Article> articles = zsetArticles.stream()
+                    .map(articleStr -> JSON.parseObject(articleStr, Article.class))
+                    .collect(Collectors.toList());
+
+            return Result.success(copyList(articles,false,false,false,false));
+        }
+        LambdaQueryWrapper<Article> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.select(Article::getId,Article::getTitle);
+        queryWrapper.select(Article::getViewCounts,Article::getViewCounts);
+        queryWrapper.last("limit "+limit);
+        List<Article> articles=articleMapper.selectList(queryWrapper);
+        // 假设你同时取出了热点文章的id以及它们的热度（以转发数、阅读数、评论数等进行度量），可以这样存储。
+        for(Article article: articles){
+            redisTemplate.opsForZSet().add("hotArticles", JSON.toJSONString(article),article.getViewCounts());
+        }
+        return Result.success(copyList(articles,false,false,false,false));
+    }
 
 
     @Override
@@ -183,6 +219,14 @@ public class ArticleServiceImpl implements ArticleService {
         return copy(article,true,true,true,true);
     }
 
+    @Override
+    public ArticleVo findArticleByIdZsort(Long id) {
+        redisTemplate.opsForValue().increment("hotArticles:");
+        String str=redisTemplate.opsForValue().get("hotArticles:");
+        Article article=JSON.parseObject(str, Article.class);
+        return copy(article,true,true,true,true);
+
+    }
     @Override
     @Transactional
     public Result publish(ArticleParam articleParam) {

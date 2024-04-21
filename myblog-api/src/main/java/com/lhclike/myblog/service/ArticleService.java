@@ -14,8 +14,10 @@ public interface ArticleService {
     Result listArticlesPage(PageParams pageParams);
     Result newArticles(int limit);
     Result hotArticles(int limit);
+    Result hotArticlesZsort(int limit);
     Result listArchives();
     ArticleVo findArticleById(Long id);
+    ArticleVo findArticleByIdZsort(Long id);
     ArticleBodyVo findArticleBody(Long articleId);
     Result publish(ArticleParam artileParam);
 

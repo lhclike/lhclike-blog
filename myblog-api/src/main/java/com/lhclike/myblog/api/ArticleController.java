@@ -36,10 +36,16 @@ public class ArticleController {
         return  articleService.newArticles(limit);
     }
     @PostMapping("hot")
-    @Cacheable(value = {"category"}, key = "#root.methodName")
+    @Cache( expire =1 * 60 * 10000 , name = "category")
     public Result hotArticles(){
         int limit=5;
         return  articleService.hotArticles(limit);
+    }
+
+    @PostMapping("hotZsort")
+    public Result hotArticlesZsort(){
+        int limit=5;
+        return  articleService.hotArticlesZsort(limit);
     }
 
 
@@ -53,6 +59,11 @@ public class ArticleController {
 
     @PostMapping("view/{id}")
     public Result findArticleById(@PathVariable("id") Long id){
+        ArticleVo articleVo=articleService.findArticleById(id);
+        return Result.success(articleVo);
+    }
+    @PostMapping("viewZsort/{id}")
+    public Result findArticleByIdZsort(@PathVariable("id") Long id){
         ArticleVo articleVo=articleService.findArticleById(id);
         return Result.success(articleVo);
     }

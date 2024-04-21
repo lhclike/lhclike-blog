@@ -6,6 +6,7 @@ import com.lhclike.myblog.vo.Result;
 import com.lhclike.myblog.vo.params.LoginBySmsParam;
 import com.lhclike.myblog.vo.params.LoginSendPhonenumber;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
